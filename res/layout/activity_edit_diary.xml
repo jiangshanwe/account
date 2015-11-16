@@ -1,0 +1,43 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/tv_diary_title"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:layout_weight="0.45"
+        android:background="#F0FFF0"
+        android:gravity="center"
+        android:text="今天的点滴"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/et_diary"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2.87"
+        android:ems="10"
+        android:gravity="center_vertical|top"
+        android:inputType="textMultiLine" >
+
+        <requestFocus />
+    </EditText>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="51dp" >
+
+        <Button
+            android:id="@+id/btn_diary_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="21dp"
+            android:text="保存" />
+    </RelativeLayout>
+
+</LinearLayout>
