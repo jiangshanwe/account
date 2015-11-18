@@ -16,6 +16,8 @@ public class Config {
     public static final String GET_WEATHER_CODE_PREFIX_URL = "http://www.weather.com.cn/data/list3/city";
     public static final String GET_WEATHER_INFO_PREFIX_URL = "http://www.weather.com.cn/data/cityinfo/";
 
+    public static final String GET_USER_BY_PHONE_NUM = "http://182.92.163.190:8080/account/";
+
     public static final String HE_WEATHER_QUERY_PREFIX_URL = "https://api.heweather.com/x3/weather?cityid=";
     public static final String HE_WEATHER_WUHAN_CITY_ID = "CN101200105";
     public static final String HE_WEATHER_QUERY_LINK_URL = "&key=";

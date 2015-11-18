@@ -94,6 +94,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         recordAdapter = new RecordAdapter(getActivity(), R.layout.record_list_item, dailyRecords);
         lvDiayRecord.setAdapter(recordAdapter);
 
+        refreshWeatherInfo();
         initDailyInfo();
 
         return view;
@@ -101,7 +102,6 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
 
     private void initDailyInfo() {
         refreshDateInfo();
-        // refreshWeatherInfo();
         refreshDailyDiet();
         refreshDailyRecord();
         refreshDairy();
@@ -203,34 +203,33 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         tvDate.setOnClickListener(this);
     }
 
-    @SuppressWarnings("unused")
     private void refreshWeatherInfo() {
 
-        /*       HttpUtil.sendHttpRequest(Config.HE_WEATHER_QUERY_PREFIX_URL + Config.HE_WEATHER_WUHAN_CITY_ID
-                       + Config.HE_WEATHER_QUERY_LINK_URL + Config.HE_WEATHER_KEY, HttpMethod.GET, new HttpCallbackListener() {
+        /* HttpUtil.sendHttpRequest(Config.HE_WEATHER_QUERY_PREFIX_URL + Config.HE_WEATHER_WUHAN_CITY_ID
+                 + Config.HE_WEATHER_QUERY_LINK_URL + Config.HE_WEATHER_KEY, HttpMethod.GET, new HttpCallbackListener() {
 
-                   @Override
-                   public void onFinish(String response) {
-                       try {
-                           JSONObject responseJsonObject = new JSONObject(response);
-                           JSONArray hds3 = responseJsonObject.getJSONArray("HeWeather data service 3.0");
-                           JSONObject dailyForecasJsonObject = hds3.getJSONObject(0);
-                           JSONArray dfJsonObject = dailyForecasJsonObject.getJSONArray("daily_forecast");
-                           JSONObject temp = dfJsonObject.getJSONObject(2);
-                           System.out.println(dailyForecasJsonObject.toString());
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                           System.out.println(e);
-                           Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
-                       }
-                   }
-                   @Override
-                   public void onError() {
-                       Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
-                   }
-               }, "");
-         */
+             @Override
+             public void onFinish(String response) {
+                 try {
+                     JSONObject responseJsonObject = new JSONObject(response);
+                     JSONArray hds3 = responseJsonObject.getJSONArray("HeWeather data service 3.0");
+                     JSONObject dailyForecasJsonObject = hds3.getJSONObject(0);
+                     JSONArray dfJsonObject = dailyForecasJsonObject.getJSONArray("daily_forecast");
+                     JSONObject temp = dfJsonObject.getJSONObject(2);
+                     System.out.println(dailyForecasJsonObject.toString());
+                 } catch (JSONException e) {
+                     e.printStackTrace();
+                     System.out.println(e);
+                     Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
+                 }
+             }
 
+             @Override
+             public void onError() {
+                 Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
+             }
+         }, "");
+        */
         HttpUtil.sendHttpRequest(Config.GET_WEATHER_CODE_PREFIX_URL + Config.HANGZHOU_AREA_CODE
                 + Config.POINT_XML_SUFFIX_URL, HttpMethod.GET, new HttpCallbackListener() {
 
@@ -278,7 +277,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         case R.id.tv_city:
             break;
         case R.id.btn_refresh_weather:
-            // refreshWeatherInfo();
+            refreshWeatherInfo();
             break;
         case R.id.tv_breakfast:
             final EditText etBreakfastCost = new EditText(this.getActivity());
