@@ -9,6 +9,6 @@ public class UtilTest {
     @Test
     public void testGetDateRange() {
         Date date = new Date();
-        System.out.println(DateUtil.getDateRange(date));
+        System.out.println(DateUtil.getDayRange(date));
     }
 }

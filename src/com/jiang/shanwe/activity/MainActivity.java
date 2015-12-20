@@ -17,6 +17,8 @@ import android.view.Window;
 
 import com.jiang.shanwe.Config;
 import com.jiang.shanwe.fragment.AddRecordFragment;
+import com.jiang.shanwe.fragment.StatisticsFragment;
+import com.jiang.shanwe.fragment.StatisticsFragment_;
 import com.jiang.shanwe.fragment.TabFragment;
 import com.jiang.shanwe.uidesign.R;
 import com.jiang.shanwe.view.ChangeColorIconWithText;
@@ -42,6 +44,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         mViewPager.setAdapter(mAdapter);
         mViewPager.setCurrentItem(1, false);
         Config.cacheLocationDate(this, new Date());
+        Config.cacheStatisticsWeekLocationDate(this, new Date());
+        Config.cacheStatisticsMonthLocationDate(this, new Date());
 
         initEvent();
     }
@@ -57,11 +61,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     }
 
     private void initDatas() {
-        TabFragment tabFragment1 = new TabFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(TabFragment.TITLE, "统计图表区");
-        tabFragment1.setArguments(bundle);
-        mTabFragments.add(tabFragment1);
+        StatisticsFragment statisticsFragment = new StatisticsFragment_();
+        mTabFragments.add(statisticsFragment);
 
         AddRecordFragment fragment = new AddRecordFragment();
         mTabFragments.add(fragment);

@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -29,6 +28,7 @@ import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,8 +49,7 @@ import com.jiang.shanwe.uidesign.R;
 import com.jiang.shanwe.util.DateUtil;
 import com.jiang.shanwe.util.NumberUtil;
 
-public class AddRecordFragment extends Fragment implements OnClickListener, OnItemClickListener,
-        OnItemLongClickListener {
+public class AddRecordFragment extends Fragment implements OnClickListener, OnItemClickListener, OnItemLongClickListener {
 
     private DBUtil dbUtil;
 
@@ -67,6 +66,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
     private TextView tvDinner;
     private TextView tvDiary;
     private Button btnAddRecord;
+    private ImageView ivEat;
 
     private ListView lvDiayRecord;
     private List<Record> dailyRecords = new ArrayList<Record>();
@@ -94,7 +94,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         recordAdapter = new RecordAdapter(getActivity(), R.layout.record_list_item, dailyRecords);
         lvDiayRecord.setAdapter(recordAdapter);
 
-        refreshWeatherInfo();
+        //refreshWeatherInfo();
         initDailyInfo();
 
         return view;
@@ -109,14 +109,12 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
 
     private void refreshDailyRecord() {
         dailyRecords.clear();
-        dailyRecords.addAll(dbUtil.getDailyRecord(Config.getCacheLocationDate(getActivity()),
-                Config.getCacheUserId(getActivity())));
+        dailyRecords.addAll(dbUtil.getDailyRecord(Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity())));
         recordAdapter.notifyDataSetChanged();
     }
 
     private void refreshDairy() {
-        Diary todayDiary = dbUtil.getDiary(Config.getCacheLocationDate(getActivity()),
-                Config.getCacheUserId(getActivity()));
+        Diary todayDiary = dbUtil.getDiary(Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity()));
         tvDiary.setText("");
         if (todayDiary != null) {
             tvDiary.setText(todayDiary.getContent());
@@ -127,8 +125,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         tvBreakfast.setText("");
         tvLunch.setText("");
         tvDinner.setText("");
-        double diet[] = dbUtil.getDailyDiet(Config.getCacheLocationDate(getActivity()),
-                Config.getCacheUserId(getActivity()));
+        double diet[] = dbUtil.getDailyDiet(Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity()));
         if (diet[0] != 0) {
             tvBreakfast.setText(NumberUtil.getSimpleDouble(diet[0]));
         }
@@ -186,7 +183,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         tvDiary = (TextView) view.findViewById(R.id.tv_diary);
         btnAddRecord = (Button) view.findViewById(R.id.btn_add_record);
         lvDiayRecord = (ListView) view.findViewById(R.id.lv_today_record);
-
+        ivEat = (ImageView) view.findViewById(R.id.iv_eat);
     }
 
     private void initEvent() {
@@ -199,7 +196,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         btnAddRecord.setOnClickListener(this);
         lvDiayRecord.setOnItemClickListener(this);
         lvDiayRecord.setOnItemLongClickListener(this);
-
+        ivEat.setOnClickListener(this);
         tvDate.setOnClickListener(this);
     }
 
@@ -230,14 +227,13 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
              }
          }, "");
         */
-        HttpUtil.sendHttpRequest(Config.GET_WEATHER_CODE_PREFIX_URL + Config.HANGZHOU_AREA_CODE
-                + Config.POINT_XML_SUFFIX_URL, HttpMethod.GET, new HttpCallbackListener() {
+        HttpUtil.sendHttpRequest(Config.GET_WEATHER_CODE_PREFIX_URL + Config.HANGZHOU_AREA_CODE + Config.POINT_XML_SUFFIX_URL, HttpMethod.GET,
+                new HttpCallbackListener() {
 
-            @Override
-            public void onFinish(String response) {
-                if (response != null && !response.equals("")) {
-                    HttpUtil.sendHttpRequest(
-                            Config.GET_WEATHER_INFO_PREFIX_URL + response.substring(response.indexOf("|") + 1)
+                    @Override
+                    public void onFinish(String response) {
+                        if (response != null && !response.equals("")) {
+                            HttpUtil.sendHttpRequest(Config.GET_WEATHER_INFO_PREFIX_URL + response.substring(response.indexOf("|") + 1)
                                     + Config.POINT_HTML_SUFFIX_URL, HttpMethod.POST, new HttpCallbackListener() {
 
                                 @Override
@@ -246,8 +242,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                                         JSONObject jsonObject = new JSONObject(response);
                                         JSONObject weatherInfo = jsonObject.getJSONObject(Config.KEY_WEATHERINFO);
                                         wuhanWeatherDesc = weatherInfo.getString(Config.KEY_WEATHER_DESCRIPTION);
-                                        wuhanWeatherTemp = weatherInfo.getString(Config.KEY_TEMP1) + "~"
-                                                + weatherInfo.getString(Config.KEY_TEMP2);
+                                        wuhanWeatherTemp = weatherInfo.getString(Config.KEY_TEMP1) + "~" + weatherInfo.getString(Config.KEY_TEMP2);
                                         tvWeatherDesc.setText(wuhanWeatherDesc);
                                         tvTemp.setText(wuhanWeatherTemp);
                                         Toast.makeText(getActivity(), "天气更新成功", Toast.LENGTH_SHORT).show();
@@ -261,14 +256,14 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                                     Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
                                 }
                             }, "");
-                }
-            }
+                        }
+                    }
 
-            @Override
-            public void onError() {
-                Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
-            }
-        }, "");
+                    @Override
+                    public void onError() {
+                        Toast.makeText(getActivity(), "天气更新失败", Toast.LENGTH_SHORT).show();
+                    }
+                }, "");
     }
 
     @Override
@@ -277,7 +272,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
         case R.id.tv_city:
             break;
         case R.id.btn_refresh_weather:
-            refreshWeatherInfo();
+            //            refreshWeatherInfo();
             break;
         case R.id.tv_breakfast:
             final EditText etBreakfastCost = new EditText(this.getActivity());
@@ -289,17 +284,15 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                 etBreakfastCost.setSelection(tvBreakfast.getText().length());
             }
             AlertDialog.Builder builderBreakfast = new AlertDialog.Builder(this.getActivity());
-            builderBreakfast.setTitle("Breakfast").setIcon(R.drawable.ic_coins_l).setView(etBreakfastCost)
-                    .setNegativeButton("Cancel", null);
+            builderBreakfast.setTitle("Breakfast").setIcon(R.drawable.ic_coins_l).setView(etBreakfastCost).setNegativeButton("Cancel", null);
             builderBreakfast.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String costStr = etBreakfastCost.getText().toString().equals("") ? "0" : etBreakfastCost.getText()
-                            .toString();
+                    String costStr = etBreakfastCost.getText().toString().equals("") ? "0" : etBreakfastCost.getText().toString();
                     try {
-                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_BREAKFAST,
-                                Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity()));
+                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_BREAKFAST, Config.getCacheLocationDate(getActivity()),
+                                Config.getCacheUserId(getActivity()));
                         refreshDailyDiet();
                     } catch (Exception e) {
                         Toast.makeText(getActivity(), "请输入金额", Toast.LENGTH_SHORT).show();
@@ -318,17 +311,15 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                 etLunchCost.setSelection(tvLunch.getText().length());
             }
             AlertDialog.Builder builderLunch = new AlertDialog.Builder(this.getActivity());
-            builderLunch.setTitle("Lunch").setIcon(R.drawable.ic_coins_l).setView(etLunchCost)
-                    .setNegativeButton("Cancel", null);
+            builderLunch.setTitle("Lunch").setIcon(R.drawable.ic_coins_l).setView(etLunchCost).setNegativeButton("Cancel", null);
             builderLunch.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String costStr = etLunchCost.getText().toString().equals("") ? "0" : etLunchCost.getText()
-                            .toString();
+                    String costStr = etLunchCost.getText().toString().equals("") ? "0" : etLunchCost.getText().toString();
                     try {
-                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_LUNCH,
-                                Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity()));
+                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_LUNCH, Config.getCacheLocationDate(getActivity()),
+                                Config.getCacheUserId(getActivity()));
                         refreshDailyDiet();
                     } catch (Exception e) {
                         Toast.makeText(getActivity(), "请输入金额", Toast.LENGTH_SHORT).show();
@@ -347,17 +338,15 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                 etDinnerCost.setSelection(tvDinner.getText().length());
             }
             AlertDialog.Builder builderDinner = new AlertDialog.Builder(this.getActivity());
-            builderDinner.setTitle("Dinner").setIcon(R.drawable.ic_coins_l).setView(etDinnerCost)
-                    .setNegativeButton("Cancel", null);
+            builderDinner.setTitle("Dinner").setIcon(R.drawable.ic_coins_l).setView(etDinnerCost).setNegativeButton("Cancel", null);
             builderDinner.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String costStr = etDinnerCost.getText().toString().equals("") ? "0" : etDinnerCost.getText()
-                            .toString();
+                    String costStr = etDinnerCost.getText().toString().equals("") ? "0" : etDinnerCost.getText().toString();
                     try {
-                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_DINNER,
-                                Config.getCacheLocationDate(getActivity()), Config.getCacheUserId(getActivity()));
+                        dbUtil.saveOrUpdateDiet(Double.parseDouble(costStr), Config.DB_VALUE_TAG_ID_DINNER, Config.getCacheLocationDate(getActivity()),
+                                Config.getCacheUserId(getActivity()));
                         refreshDailyDiet();
                     } catch (Exception e) {
                         Toast.makeText(getActivity(), "请输入金额", Toast.LENGTH_SHORT).show();
@@ -386,6 +375,10 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
                     initDailyInfo();
                 }
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            break;
+        case R.id.iv_eat:
+            Config.cacheLocationDate(getActivity(), new Date());
+            initDailyInfo();
             break;
         default:
             break;
@@ -448,18 +441,14 @@ public class AddRecordFragment extends Fragment implements OnClickListener, OnIt
             }
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 xup = event.getX();
-                Log.d(Config.LOG_TAG, xdown + ":DOWN");
-                Log.d(Config.LOG_TAG, xup + ":UP");
-                if (xup - xdown > 350) {
-                    // 想右滑动,时间往前一天
-                    Config.cacheLocationDate(getActivity(),
-                            DateUtil.getPreviousDate(Config.getCacheLocationDate(getActivity())));
+                if (xup - xdown > 250) {
+                    // 向右滑动,时间往前一天
+                    Config.cacheLocationDate(getActivity(), DateUtil.getPreviousDay(Config.getCacheLocationDate(getActivity())));
                     initDailyInfo();
                 }
-                if (xdown - xup > 350) {
-                    // 想左滑动,时间往后一天
-                    Config.cacheLocationDate(getActivity(),
-                            DateUtil.getNextDate(Config.getCacheLocationDate(getActivity())));
+                if (xdown - xup > 250) {
+                    // 向左滑动,时间往后一天
+                    Config.cacheLocationDate(getActivity(), DateUtil.getNextDay(Config.getCacheLocationDate(getActivity())));
                     initDailyInfo();
                 }
             }

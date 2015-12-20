@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddEatActivity" >
+
+    <TextView
+        android:id="@+id/tvLanuch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="56dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvDinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/tvBreakfast"
+        android:layout_below="@+id/tvBreakfast"
+        android:layout_marginTop="64dp"
+        android:text="TextView" />
+
+    <TextView
+        android:id="@+id/tvBreakfast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/tvLanuch"
+        android:layout_marginTop="46dp"
+        android:text="Breakfast" />
+
+    <EditText
+        android:id="@+id/etBreakfast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvLanuch"
+        android:layout_alignBottom="@+id/tvLanuch"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/etLanuch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvBreakfast"
+        android:layout_alignBottom="@+id/tvBreakfast"
+        android:layout_alignLeft="@+id/etBreakfast"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/etDinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/tvDinner"
+        android:layout_alignBottom="@+id/tvDinner"
+        android:layout_alignLeft="@+id/etLanuch"
+        android:ems="10"
+        android:inputType="numberDecimal" />
+
+</RelativeLayout>

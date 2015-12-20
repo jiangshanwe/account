@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/lytBarChart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lytPieChart"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <Button
+            android:id="@+id/btnStatisticsPrevious"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:text="&lt;&lt;" />
+
+        <Button
+            android:id="@+id/btnStatisticsNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:text=">>" />
+
+        <RadioGroup
+            android:id="@+id/rgStatistics"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dp"
+            android:layout_toRightOf="@+id/btnStatisticsPrevious"
+            android:orientation="horizontal" >
+
+            <RadioButton
+                android:id="@+id/rbWeek"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:checked="true"
+                android:text="周" />
+
+            <RadioButton
+                android:id="@+id/rbMonth"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="月" />
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/ivSyncStafisticsChart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="26dp"
+            android:layout_toRightOf="@+id/rgStatistics"
+            android:background="@android:color/holo_blue_bright"
+            android:src="@android:drawable/stat_notify_sync"
+            tools:ignore="NewApi" />
+
+    </RelativeLayout>
+
+</LinearLayout>

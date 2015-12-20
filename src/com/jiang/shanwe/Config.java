@@ -7,6 +7,7 @@ import android.content.SharedPreferences.Editor;
 
 public class Config {
 
+    public static final String TEST_TAG = "Jiang.Shanwe";
     public static final String CHARSET = "utf-8";
     public static final String APP_ID = "com.jiang.shanwe.loveaccount";
 
@@ -33,9 +34,14 @@ public class Config {
     public static final String KEY_TEMP2 = "temp2";
     public static final String KEY_WEATHER_DESCRIPTION = "weather";
     public static final String KEY_LOCATION_DATE = "locationDate";
+    public static final String KEY_STATISTICS_WEEK_DATE = "statisticWeekDate";
+    public static final String KEY_STATISTICS_MONTH_DATE = "statisticMonthDate";
     public static final String KEY_TOKEN = "token";
     public static final String KEY_PHONE_NUM = "phone";
     public static final String KEY_USER_ID = "userId";
+
+    public static final String MAP_KEY_CATEGORY_VALUE = "categoryValue";
+    public static final String MAP_KEY_CATEGORY_NAME = "categoryName";
 
     public static final String EXTRA_KEY_DIARY_CONTENT = "diaryContent";
     public static final String EXTRA_KEY_RECORD_CONTENT_ARRAY = "recordContentArray";
@@ -44,6 +50,7 @@ public class Config {
     public static final int DB_VALUE_SYSTEM_CREATERID = -1;
     public static final int DB_VALUE_STATUS_DISABLE = 0;
     public static final int DB_VALUE_STATUS_USABLE = 1;
+    public static final int DB_VALUE_DEFAUULT_TAG = 15;
 
     public static final int DB_VALUE_SYNC_STATUS_NOT = 0;
     public static final int DB_VALUE_SYNC_STATUS_ALREADY = 1;
@@ -95,7 +102,26 @@ public class Config {
     }
 
     public static Date getCacheLocationDate(Context context) {
-        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_LOCATION_DATE,
-                new Date().getTime()));
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_LOCATION_DATE, new Date().getTime()));
+    }
+
+    public static void cacheStatisticsWeekLocationDate(Context context, Date date) {
+        Editor e = context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).edit();
+        e.putLong(KEY_STATISTICS_WEEK_DATE, date.getTime());
+        e.commit();
+    }
+
+    public static Date getStatisticsWeekCacheLocationDate(Context context) {
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_STATISTICS_WEEK_DATE, new Date().getTime()));
+    }
+
+    public static void cacheStatisticsMonthLocationDate(Context context, Date date) {
+        Editor e = context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).edit();
+        e.putLong(KEY_STATISTICS_MONTH_DATE, date.getTime());
+        e.commit();
+    }
+
+    public static Date getStatisticsMonthCacheLocationDate(Context context) {
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_STATISTICS_MONTH_DATE, new Date().getTime()));
     }
 }

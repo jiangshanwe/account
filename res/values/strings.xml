@@ -6,5 +6,6 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_edit_diary">EditDiaryActivity</string>
     <string name="title_activity_add_record">AddRecordActivity</string>
+    <string name="title_activity_add_eat">AddEatActivity</string>
 
 </resources>

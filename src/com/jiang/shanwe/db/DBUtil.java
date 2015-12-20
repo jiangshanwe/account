@@ -2,7 +2,9 @@ package com.jiang.shanwe.db;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,14 +28,13 @@ public class DBUtil {
     public static final String TABLE_NAME_DIARY = "Diary";
     public static final String TABLE_NAME_RECORD_TAG = "Record_Tag";
 
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private static DBUtil dbUtil;
-    private SQLiteDatabase db;
+    private static SQLiteDatabase db;
 
-    private String dietSelectSql = "SELECT re.id, re.count FROM Record_Tag AS reta "
-            + "JOIN Record AS re ON reta.recordId = re.id " + "JOIN Tag AS ta ON ta.id = reta.tagId "
-            + "WHERE re.consumeDate BETWEEN ? AND ? AND re.status = 1 AND re.ownerId = ? AND ta.id = ?";
+    private String dietSelectSql = "SELECT re.id, re.count FROM Record_Tag AS reta " + "JOIN Record AS re ON reta.recordId = re.id "
+            + "JOIN Tag AS ta ON ta.id = reta.tagId " + "WHERE re.consumeDate BETWEEN ? AND ? AND re.status = 1 AND re.ownerId = ? AND ta.id = ?";
 
     private DBUtil(Context context) {
         OpenHelper openHelper = new OpenHelper(context, DB_NAME, null, VERSION);
@@ -48,14 +49,13 @@ public class DBUtil {
     }
 
     public void saveOrUpdateDiary(Diary diary) {
-        long[] dateRange = DateUtil.getDateRange(diary.getDiaryDate());
-        Cursor cursor = db.rawQuery(
-                "SELECT id FROM Diary WHERE ownerId = ? and status = 1 AND diaryDate BETWEEN ? AND ? ", new String[] {
-                        diary.getOwnerId() + "", dateRange[0] + "", dateRange[1] + "" });
+        long[] dateRange = DateUtil.getDayRange(diary.getDiaryDate());
+        Cursor cursor = db.rawQuery("SELECT id FROM Diary WHERE ownerId = ? and status = 1 AND diaryDate BETWEEN ? AND ? ", new String[] {
+                diary.getOwnerId() + "", dateRange[0] + "", dateRange[1] + "" });
         if (cursor.moveToFirst()) {
             int existId = cursor.getInt(cursor.getColumnIndex("id"));
-            db.execSQL("UPDATE Diary SET content = ?, updatedTime = ?, syncStatus = 0 WHERE id = ?", new String[] {
-                    diary.getContent(), new Date().getTime() + "", existId + "" });
+            db.execSQL("UPDATE Diary SET content = ?, updatedTime = ?, syncStatus = 0 WHERE id = ?", new String[] { diary.getContent(),
+                    new Date().getTime() + "", existId + "" });
         } else {
             ContentValues values = new ContentValues();
             values.put("ownerId", diary.getOwnerId());
@@ -71,10 +71,9 @@ public class DBUtil {
 
     public Diary getDiary(Date date, int ownerId) {
         Diary diary = null;
-        long[] dateRange = DateUtil.getDateRange(date);
-        Cursor cursor = db.rawQuery(
-                "SELECT * FROM Diary WHERE diaryDate BETWEEN ? and ? and ownerId = ? and status = 1", new String[] {
-                        dateRange[0] + "", dateRange[1] + "", ownerId + "" });
+        long[] dateRange = DateUtil.getDayRange(date);
+        Cursor cursor = db.rawQuery("SELECT * FROM Diary WHERE diaryDate BETWEEN ? and ? and ownerId = ? and status = 1", new String[] { dateRange[0] + "",
+                dateRange[1] + "", ownerId + "" });
         if (cursor.moveToFirst()) {
             diary = new Diary();
             diary.setId(cursor.getInt(cursor.getColumnIndex("id")));
@@ -100,12 +99,8 @@ public class DBUtil {
                 recordId = db.insert(TABLE_NAME_RECORD, null, values);
             } else {
                 String updateRecordSql = "update Record set count = ?, comments = ?, updatedTime = ?, status = 1, syncStatus = 0 where id = ? ";
-                db.execSQL(
-                        updateRecordSql,
-                        new String[] { record.getCount() + "", record.getComments(), new Date().getTime() + "",
-                                record.getId() + "" });
-                db.execSQL("update Record_Tag set status = 0, syncStatus = 0 where recordId = ?",
-                        new String[] { record.getId() + "" });
+                db.execSQL(updateRecordSql, new String[] { record.getCount() + "", record.getComments(), new Date().getTime() + "", record.getId() + "" });
+                db.execSQL("update Record_Tag set status = 0, syncStatus = 0 where recordId = ?", new String[] { record.getId() + "" });
 
             }
             if (record.getTagIds() != null && record.getTagIds().size() > 0) {
@@ -119,6 +114,15 @@ public class DBUtil {
                     values.put("syncStatus", Config.DB_VALUE_SYNC_STATUS_NOT);
                     db.insert(TABLE_NAME_RECORD_TAG, null, values);
                 }
+            } else { //添加默认分类：其它
+                ContentValues values = new ContentValues();
+                values.clear();
+                values.put("recordId", recordId);
+                values.put("tagId", Config.DB_VALUE_DEFAUULT_TAG);
+                values.put("createdTime", new Date().getTime());
+                values.put("status", Config.DB_VALUE_STATUS_USABLE);
+                values.put("syncStatus", Config.DB_VALUE_SYNC_STATUS_NOT);
+                db.insert(TABLE_NAME_RECORD_TAG, null, values);
             }
         }
     }
@@ -130,9 +134,8 @@ public class DBUtil {
 
     public void saveOrUpdateDiet(double count, int dietTag, Date consumeDate, int ownerId) {
         String dietUpdateSql = "UPDATE Record SET count = ?, updatedTime = ?, status=1, syncStatus = 0 WHERE id = ?";
-        long[] dateRange = DateUtil.getDateRange(consumeDate);
-        Cursor cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "",
-                dietTag + "" });
+        long[] dateRange = DateUtil.getDayRange(consumeDate);
+        Cursor cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "", dietTag + "" });
         if (cursor.moveToFirst()) {
             int existId = cursor.getInt(cursor.getColumnIndex("id"));
             db.execSQL(dietUpdateSql, new String[] { count + "", new Date().getTime() + "", existId + "" });
@@ -193,19 +196,16 @@ public class DBUtil {
 
     public double[] getDailyDiet(Date date, int ownerId) {
         double[] dailyDiet = { 0, 0, 0 };
-        long[] dateRange = DateUtil.getDateRange(date);
-        Cursor cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "",
-                Config.DB_VALUE_TAG_ID_BREAKFAST + "" });
+        long[] dateRange = DateUtil.getDayRange(date);
+        Cursor cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "", Config.DB_VALUE_TAG_ID_BREAKFAST + "" });
         if (cursor.moveToFirst()) {
             dailyDiet[0] = cursor.getDouble(cursor.getColumnIndex("count"));
         }
-        cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "",
-                Config.DB_VALUE_TAG_ID_LUNCH + "" });
+        cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "", Config.DB_VALUE_TAG_ID_LUNCH + "" });
         if (cursor.moveToFirst()) {
             dailyDiet[1] = cursor.getDouble(cursor.getColumnIndex("count"));
         }
-        cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "",
-                Config.DB_VALUE_TAG_ID_DINNER + "" });
+        cursor = db.rawQuery(dietSelectSql, new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "", Config.DB_VALUE_TAG_ID_DINNER + "" });
         if (cursor.moveToFirst()) {
             dailyDiet[2] = cursor.getDouble(cursor.getColumnIndex("count"));
         }
@@ -243,14 +243,11 @@ public class DBUtil {
 
     public List<Record> getDailyRecord(Date date, int ownerId) {
         List<Record> dayRecordList = new ArrayList<Record>();
-        long[] dateRange = DateUtil.getDateRange(date);
-        Cursor cursor = db
-                .rawQuery(
-                        "SELECT re.id AS recordId ,ta.id AS tagId, count, comments, ta.name AS tagName "
-                                + "FROM Record_Tag as reta JOIN Record AS re ON reta.recordId = re.id "
-                                + "JOIN Tag AS ta ON ta.id = reta.tagId WHERE re.consumeDate "
-                                + "BETWEEN ? and ? and re.ownerId = ? and re.status = 1 and reta.status = 1 and ta.id > 3 ORDER BY recordId DESC",
-                        new String[] { dateRange[0] + "", dateRange[1] + "", ownerId + "" });
+        long[] dateRange = DateUtil.getDayRange(date);
+        Cursor cursor = db.rawQuery("SELECT re.id AS recordId ,ta.id AS tagId, count, comments, ta.name AS tagName "
+                + "FROM Record_Tag as reta JOIN Record AS re ON reta.recordId = re.id " + "JOIN Tag AS ta ON ta.id = reta.tagId WHERE re.consumeDate "
+                + "BETWEEN ? and ? and re.ownerId = ? and re.status = 1 and reta.status = 1 and ta.id > 3 ORDER BY recordId DESC", new String[] {
+                dateRange[0] + "", dateRange[1] + "", ownerId + "" });
 
         int tempRecordId = -1;
         boolean isFirstCursor = true;
@@ -274,22 +271,19 @@ public class DBUtil {
                     tempRecord.setId(recordId);
                     tempRecord.setCount(cursor.getDouble(cursor.getColumnIndex("count")));
                     tempRecord.setComments(cursor.getString(cursor.getColumnIndex("comments")));
-                    tempTags.add(new Tag(cursor.getInt(cursor.getColumnIndex("tagId")), cursor.getString(cursor
-                            .getColumnIndex("tagName"))));
+                    tempTags.add(new Tag(cursor.getInt(cursor.getColumnIndex("tagId")), cursor.getString(cursor.getColumnIndex("tagName"))));
                     tempRecordId = recordId;
                 } else {
-                    tempTags.add(new Tag(cursor.getInt(cursor.getColumnIndex("tagId")), cursor.getString(cursor
-                            .getColumnIndex("tagName"))));
+                    tempTags.add(new Tag(cursor.getInt(cursor.getColumnIndex("tagId")), cursor.getString(cursor.getColumnIndex("tagName"))));
                 }
                 isFirstCursor = false;
             } while (cursor.moveToNext());
             tempRecord.setTags(tempTags);
             dayRecordList.add(tempRecord);
         }
-        cursor = db.rawQuery(
-                "SELECT * FROM Record WHERE Record.id NOT IN (SELECT recordId FROM Record_Tag) AND consumeDate "
-                        + "BETWEEN ? and ? AND ownerId = ? AND status = 1  ORDER BY createdTime DESC", new String[] {
-                        dateRange[0] + "", dateRange[1] + "", ownerId + "" });
+        cursor = db.rawQuery("SELECT * FROM Record WHERE Record.id NOT IN (SELECT recordId FROM Record_Tag) AND consumeDate "
+                + "BETWEEN ? and ? AND ownerId = ? AND status = 1  ORDER BY createdTime DESC", new String[] { dateRange[0] + "", dateRange[1] + "",
+                ownerId + "" });
         if (cursor.moveToFirst()) {
             do {
                 Record noTagRecord = new Record();
@@ -302,5 +296,85 @@ public class DBUtil {
         }
         cursor.close();
         return dayRecordList;
+    }
+
+    /**
+     * 获得指定日期的消费总和
+     * @param date
+     * @return
+     */
+    public static double getDailyCoustSum(Date date) {
+        double dailyCountSum = 0;
+        String sql = "SELECT sum(count) AS dailySum FROM Record WHERE consumeDate BETWEEN ? AND ? AND status = 1";
+        long[] dateRange = DateUtil.getDayRange(date);
+        Cursor cursor = db.rawQuery(sql, new String[] { dateRange[0] + "", dateRange[1] + "" });
+        if (cursor.moveToFirst()) {
+            dailyCountSum = cursor.getDouble(cursor.getColumnIndex("dailySum"));
+        }
+        return dailyCountSum;
+    }
+
+    /**
+     * 获得指定日期所在星期的每天消费总和
+     * @param date
+     * @return
+     */
+    public double[][] getWeekValue(Date date) {
+        double[][] dailyValue = new double[1][8];
+        int currendDayOfWeek = DateUtil.getDayOfWeek(date);
+        for (int i = 1; i < currendDayOfWeek; i++) {
+            dailyValue[0][i] = getDailyCoustSum(new Date(date.getTime() - DateUtil.DAY_MILLISECOND * (currendDayOfWeek - i)));
+        }
+        for (int i = currendDayOfWeek; i <= 7; i++) {
+            dailyValue[0][i] = getDailyCoustSum(new Date(date.getTime() + DateUtil.DAY_MILLISECOND * (i - currendDayOfWeek)));
+        }
+        return dailyValue;
+    }
+
+    /**
+     * 获得指定日期所在月份的每天消费总和
+     * @param date
+     * @return
+     */
+    public double[][] getMonthValue(Date date) {
+        int daysCount = DateUtil.getMonthDayCount(date);
+        double[][] monthValue = new double[1][daysCount + 1];
+        int currendDayOfMonth = DateUtil.getDayOfMonth(date);
+        for (int i = 1; i < currendDayOfMonth; i++) {
+            monthValue[0][i] = getDailyCoustSum(new Date(date.getTime() - DateUtil.DAY_MILLISECOND * (currendDayOfMonth - i)));
+        }
+        for (int i = currendDayOfMonth; i <= daysCount; i++) {
+            monthValue[0][i] = getDailyCoustSum(new Date(date.getTime() + DateUtil.DAY_MILLISECOND * (i - currendDayOfMonth)));
+        }
+        return monthValue;
+    }
+
+    /**
+     * 获取指定日期所在周的各项消费总和，以及对应的百分比
+     * @param date
+     * @return
+     */
+    public static Map<String, Object> getConsumeCategory(long[] dateRange, int ownerId) {
+        Map<String, Object> weekCategory = new HashMap<String, Object>();
+        String sql = "SELECT re.id AS reId, re.count AS reCount, re.consumeDate AS reConsumeDate, " + "reta.id AS retaId, "
+                + "ta.id AS taId, ta.name AS taName, " + "sum(count) AS countSum " + "FROM Record AS re " + "JOIN Record_Tag AS reta "
+                + "ON reta.recordId = re.id " + "JOIN Tag AS ta " + "ON ta.id = reta.tagId AND re.status = 1 "
+                + "AND re.ownerId = ? AND reta.status = 1 AND re.consumeDate " + "BETWEEN ? AND ? " + "GROUP BY taId " + "ORDER BY countSum DESC;";
+        Cursor cursor = db.rawQuery(sql, new String[] { ownerId + "", dateRange[0] + "", dateRange[1] + "" });
+        int categorySize = cursor.getCount();
+        double[] categoryValue = new double[categorySize];
+        String[] categoryName = new String[categorySize];
+        int i = 0;
+        if (cursor.moveToFirst()) {
+            do {
+                categoryValue[i] = cursor.getDouble(cursor.getColumnIndex("countSum"));
+                categoryName[i] = cursor.getString(cursor.getColumnIndex("taName"));
+                i++;
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        weekCategory.put(Config.MAP_KEY_CATEGORY_VALUE, categoryValue);
+        weekCategory.put(Config.MAP_KEY_CATEGORY_NAME, categoryName);
+        return weekCategory;
     }
 }
