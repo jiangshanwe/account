@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jiang.shanwe.uidesign"
+    package="com.jiang.shanwe.loveaccount"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -10,36 +10,54 @@
     </instrumentation>
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="16" />
+        android:minSdkVersion="14"
+        android:targetSdkVersion="14" />
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name="com.jiang.shanwe.AccountApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_main"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name="com.jiang.shanwe.activity.MainActivity"
-            android:label="@string/app_name" >
+        android:theme="@android:style/Theme.Light.NoTitleBar" >
+        <meta-data
+            android:name="com.thinkland.juheapi.openid"
+            android:value="JH7f30cc28e37092d81efa1d5a9dc1880d" />
+
+        <activity android:name="com.jiang.shanwe.activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.jiang.shanwe.activity.SetPasswordActivity"></activity>
+        <activity
+            android:name="com.jiang.shanwe.activity.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
         <activity android:name="com.jiang.shanwe.activity.EditDiaryActivity" >
         </activity>
         <activity android:name="com.jiang.shanwe.activity.AddRecordActivity" >
         </activity>
-
-        <uses-library android:name="android.test.runner" />
-
+        <activity android:name="com.jiang.shanwe.activity.WeatherActivity" >
+        </activity>
+        <activity android:name="com.jiang.shanwe.activity.CityActivity" >
+        </activity>
         <activity
-            android:name="com.jiang.shanwe.uidesign.AddEatActivity"
+            android:name="com.jiang.shanwe.AddEatActivity"
             android:label="@string/title_activity_add_eat" >
         </activity>
+
+        <service android:name="com.jiang.shanwe.service.WeatherService" >
+        </service>
+
+        <uses-library android:name="android.test.runner" />
     </application>
 
 </manifest>

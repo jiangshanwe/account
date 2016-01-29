@@ -28,7 +28,7 @@ import com.jiang.shanwe.Config;
 import com.jiang.shanwe.chart.BarChart;
 import com.jiang.shanwe.chart.PieChart;
 import com.jiang.shanwe.db.DBUtil;
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.util.DateUtil;
 import com.jiang.shanwe.util.NumberUtil;
 
@@ -58,7 +58,8 @@ public class StatisticsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_statistics, container, false);
         return view;
     }
@@ -76,16 +77,24 @@ public class StatisticsFragment extends Fragment {
         final int[] RENDERER_COLOR = { 0xff0000ff };
 
         String[] textLable = { "一", "二", "三", "四", "五", "六", "天" };
-        double[][] barValue = DBUtil.getInstance(getActivity()).getWeekValue(Config.getStatisticsWeekCacheLocationDate(getActivity()));
+        double[][] barValue = DBUtil.getInstance(getActivity()).getWeekValue(
+                Config.getStatisticsWeekCacheLocationDate(getActivity()));
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        String chartTitle = sdf.format(DateUtil.getStartDayOfWeek(Config.getStatisticsWeekCacheLocationDate(getActivity()))) + " --- "
-                + sdf.format(DateUtil.getEndDayOfWeek(Config.getStatisticsWeekCacheLocationDate(getActivity()))) + "     共消费： "
+        String chartTitle = sdf.format(DateUtil.getStartDayOfWeek(Config
+                .getStatisticsWeekCacheLocationDate(getActivity())))
+                + " --- "
+                + sdf.format(DateUtil.getEndDayOfWeek(Config
+                        .getStatisticsWeekCacheLocationDate(getActivity())))
+                + "     共消费： "
                 + NumberUtil.getSumOfTwoDimensionalDoubleArray(barValue, 1) + " 元";
-        BarChart barchart = new BarChart(chartTitle, "", "", 7, NumberUtil.getYAxisUpperLimit(barValue, 1));
+        BarChart barchart = new BarChart(chartTitle, "", "", 7,
+                NumberUtil.getYAxisUpperLimit(barValue, 1));
 
-        GraphicalView chartview = ChartFactory.getBarChartView(getActivity(), barchart.GetDataset(SERIERS_NUM, SERIERS_NAME, barValue),
-                barchart.GetRenderer(SERIERS_NUM, RENDERER_COLOR, textLable), Type.DEFAULT);
+        GraphicalView chartview = ChartFactory.getBarChartView(getActivity(),
+                barchart.GetDataset(SERIERS_NUM, SERIERS_NAME, barValue),
+                barchart.GetRenderer(SERIERS_NUM, RENDERER_COLOR, textLable),
+                Type.DEFAULT);
         lytBarChart.addView(chartview);
     }
 
@@ -96,9 +105,12 @@ public class StatisticsFragment extends Fragment {
     @AfterViews
     public void renderWeekPieChart() {
         lytPieChart.removeAllViews();
-        Map<String, Object> weekCategory = DBUtil.getConsumeCategory(DateUtil.getWeekRange(Config.getStatisticsWeekCacheLocationDate(getActivity())),
+        Map<String, Object> weekCategory = DBUtil.getConsumeCategory(DateUtil
+                .getWeekRange(Config.getStatisticsWeekCacheLocationDate(getActivity())),
                 Config.getCacheUserId(getActivity()));
-        PieChart pieChart = new PieChart((double[]) weekCategory.get(Config.MAP_KEY_CATEGORY_VALUE), (String[]) weekCategory.get(Config.MAP_KEY_CATEGORY_NAME));
+        PieChart pieChart = new PieChart(
+                (double[]) weekCategory.get(Config.MAP_KEY_CATEGORY_VALUE),
+                (String[]) weekCategory.get(Config.MAP_KEY_CATEGORY_NAME));
         lytPieChart.addView(pieChart.getPieChartView(getActivity()));
     }
 
@@ -111,17 +123,28 @@ public class StatisticsFragment extends Fragment {
         final String[] SERIERS_NAME = { "" };
         final int[] RENDERER_COLOR = { 0xff0000ff };
 
-        int daysCount = DateUtil.getMonthDayCount(Config.getStatisticsMonthCacheLocationDate(getActivity()));
-        String[] textLable = DateUtil.getMonthTextLabel(Config.getStatisticsMonthCacheLocationDate(getActivity()));
-        double[][] barValue = DBUtil.getInstance(getActivity()).getMonthValue(Config.getStatisticsMonthCacheLocationDate(getActivity()));
+        int daysCount = DateUtil.getMonthDayCount(Config
+                .getStatisticsMonthCacheLocationDate(getActivity()));
+        String[] textLable = DateUtil.getMonthTextLabel(Config
+                .getStatisticsMonthCacheLocationDate(getActivity()));
+        double[][] barValue = DBUtil.getInstance(getActivity()).getMonthValue(
+                Config.getStatisticsMonthCacheLocationDate(getActivity()));
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
-        String chartTitle = sdf.format(DateUtil.getStartDayOfMonth(Config.getStatisticsMonthCacheLocationDate(getActivity()))) + " --- "
-                + sdf.format(DateUtil.getEndDayOfMonth(Config.getStatisticsMonthCacheLocationDate(getActivity()))) + "     共消费："
-                + NumberUtil.getSumOfTwoDimensionalDoubleArray(barValue, 1) + " 元";
-        BarChart barchart = new BarChart(chartTitle, "", "", daysCount, NumberUtil.getYAxisUpperLimit(barValue, 1));
+        String chartTitle = sdf.format(DateUtil.getStartDayOfMonth(Config
+                .getStatisticsMonthCacheLocationDate(getActivity())))
+                + " --- "
+                + sdf.format(DateUtil.getEndDayOfMonth(Config
+                        .getStatisticsMonthCacheLocationDate(getActivity())))
+                + "     共消费："
+                + NumberUtil.getSumOfTwoDimensionalDoubleArray(barValue, 1)
+                + " 元";
+        BarChart barchart = new BarChart(chartTitle, "", "", daysCount,
+                NumberUtil.getYAxisUpperLimit(barValue, 1));
 
-        GraphicalView chartview = ChartFactory.getBarChartView(getActivity(), barchart.GetDataset(SERIERS_NUM, SERIERS_NAME, barValue),
-                barchart.GetRenderer(SERIERS_NUM, RENDERER_COLOR, textLable), Type.DEFAULT);
+        GraphicalView chartview = ChartFactory.getBarChartView(getActivity(),
+                barchart.GetDataset(SERIERS_NUM, SERIERS_NAME, barValue),
+                barchart.GetRenderer(SERIERS_NUM, RENDERER_COLOR, textLable),
+                Type.DEFAULT);
         lytBarChart.addView(chartview);
     }
 
@@ -130,9 +153,13 @@ public class StatisticsFragment extends Fragment {
      */
     public void renderMonthPieChart() {
         lytPieChart.removeAllViews();
-        Map<String, Object> weekCategory = DBUtil.getConsumeCategory(DateUtil.getMonthRange(Config.getStatisticsMonthCacheLocationDate(getActivity())),
-                Config.getCacheUserId(getActivity()));
-        PieChart pieChart = new PieChart((double[]) weekCategory.get(Config.MAP_KEY_CATEGORY_VALUE), (String[]) weekCategory.get(Config.MAP_KEY_CATEGORY_NAME));
+        Map<String, Object> weekCategory = DBUtil.getConsumeCategory(
+                DateUtil.getMonthRange(Config
+                        .getStatisticsMonthCacheLocationDate(getActivity())), Config
+                        .getCacheUserId(getActivity()));
+        PieChart pieChart = new PieChart(
+                (double[]) weekCategory.get(Config.MAP_KEY_CATEGORY_VALUE),
+                (String[]) weekCategory.get(Config.MAP_KEY_CATEGORY_NAME));
         lytPieChart.addView(pieChart.getPieChartView(getActivity()));
     }
 
@@ -183,12 +210,16 @@ public class StatisticsFragment extends Fragment {
         switch (rgStatistics.getCheckedRadioButtonId()) {
         // 上一周
         case R.id.rbWeek:
-            Config.cacheStatisticsWeekLocationDate(getActivity(), DateUtil.getPreviousWeek(Config.getStatisticsWeekCacheLocationDate(getActivity())));
+            Config.cacheStatisticsWeekLocationDate(getActivity(), DateUtil
+                    .getPreviousWeek(Config
+                            .getStatisticsWeekCacheLocationDate(getActivity())));
             renderWeekChart();
             break;
         // 上一月
         case R.id.rbMonth:
-            Config.cacheStatisticsMonthLocationDate(getActivity(), DateUtil.getPreviousMonth(Config.getStatisticsMonthCacheLocationDate(getActivity())));
+            Config.cacheStatisticsMonthLocationDate(getActivity(), DateUtil
+                    .getPreviousMonth(Config
+                            .getStatisticsMonthCacheLocationDate(getActivity())));
             renderMonthChart();
             break;
         default:
@@ -204,12 +235,16 @@ public class StatisticsFragment extends Fragment {
         switch (rgStatistics.getCheckedRadioButtonId()) {
         // 下一周
         case R.id.rbWeek:
-            Config.cacheStatisticsWeekLocationDate(getActivity(), DateUtil.getNextWeek(Config.getStatisticsWeekCacheLocationDate(getActivity())));
+            Config.cacheStatisticsWeekLocationDate(getActivity(),
+                    DateUtil.getNextWeek(Config
+                            .getStatisticsWeekCacheLocationDate(getActivity())));
             renderWeekChart();
             break;
         // 下一月
         case R.id.rbMonth:
-            Config.cacheStatisticsMonthLocationDate(getActivity(), DateUtil.getNextMonth(Config.getStatisticsMonthCacheLocationDate(getActivity())));
+            Config.cacheStatisticsMonthLocationDate(getActivity(), DateUtil
+                    .getNextMonth(Config
+                            .getStatisticsMonthCacheLocationDate(getActivity())));
             renderMonthChart();
             break;
         default:

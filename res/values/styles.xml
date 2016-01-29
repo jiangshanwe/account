@@ -23,5 +23,18 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:padding">16dp</item>
     </style>
+    
+    <style name="ViewStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="TextViewStyle" parent="ViewStyle">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/text_color</item>
+        <item name="android:text">@string/default_text</item>
+    </style>
 
 </resources>

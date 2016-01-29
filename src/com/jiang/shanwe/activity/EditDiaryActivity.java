@@ -14,7 +14,7 @@ import android.widget.RatingBar;
 import com.jiang.shanwe.Config;
 import com.jiang.shanwe.db.DBUtil;
 import com.jiang.shanwe.model.Diary;
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
 
 public class EditDiaryActivity extends Activity implements OnClickListener {
 
@@ -28,9 +28,11 @@ public class EditDiaryActivity extends Activity implements OnClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_edit_diary);
         initView();
-        String diaryContent = DBUtil.getInstance(this).getDiary(Config.getCacheLocationDate(this),
-                Config.getCacheUserId(this)) == null ? "" : DBUtil.getInstance(this)
-                .getDiary(Config.getCacheLocationDate(this), Config.getCacheUserId(this)).getContent();
+        String diaryContent = DBUtil.getInstance(this).getDiary(
+                Config.getCacheLocationDate(this), Config.getCacheUserId(this)) == null ? ""
+                : DBUtil.getInstance(this)
+                        .getDiary(Config.getCacheLocationDate(this),
+                                Config.getCacheUserId(this)).getContent();
         etDiary.setText(diaryContent);
         etDiary.setSelection(diaryContent.length());
     }

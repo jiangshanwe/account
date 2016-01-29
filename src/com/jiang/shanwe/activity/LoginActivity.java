@@ -1,114 +1,88 @@
 package com.jiang.shanwe.activity;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jiang.shanwe.Config;
-import com.jiang.shanwe.net.HttpCallbackListener;
-import com.jiang.shanwe.net.HttpMethod;
-import com.jiang.shanwe.net.HttpUtil;
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
+import com.jiang.shanwe.view.LocusPassWordView;
+import com.jiang.shanwe.view.LocusPassWordView.OnCompleteListener;
 
-/**
- * Activity which displays a login screen to the user, offering registration as
- * well.
- */
-@SuppressLint("NewApi")
-public class LoginActivity extends Activity implements OnClickListener {
-    private static final String[] DUMMY_CREDENTIALS = new String[] { "foo@example.com:hello", "bar@example.com:world" };
+public class LoginActivity extends Activity {
+    private LocusPassWordView lpwv;
+    private Toast toast;
 
-    private EditText mPhone;
-    private EditText mPassword;
-    private Button mLoginButton;
-
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.activity_login);
-        mPhone = (EditText) findViewById(R.id.phone);
-        mPassword = (EditText) findViewById(R.id.password);
-        mLoginButton = (Button) findViewById(R.id.sign_in_button);
-
-        pref = PreferenceManager.getDefaultSharedPreferences(this);
-        mPhone.setText(pref.getString("phoneNum", ""));
-
-        if (!mPhone.getText().toString().isEmpty()) {
-            mPassword.requestFocus();
+    /**
+     * Toast message
+     * @param message
+     */
+    private void showToast(CharSequence message) {
+        if (null == toast) {
+            toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
+        } else {
+            toast.setText(message);
         }
 
-        mLoginButton.setOnClickListener(this);
+        toast.show();
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-        case R.id.sign_in_button:
-            if (mPassword.getText().toString().isEmpty() || mPhone.getText().toString().isEmpty()) {
-                Toast.makeText(LoginActivity.this, "请先输入账号和密码", Toast.LENGTH_SHORT).show();
-                return;
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.login_activity);
+        lpwv = (LocusPassWordView) this.findViewById(R.id.mLocusPassWordView);
+        lpwv.setOnCompleteListener(new OnCompleteListener() {
+            public void onComplete(String mPassword) {
+                // 如果密码正确,则进入主页面。
+                System.out.println(mPassword);
+                if (lpwv.verifyPassword(mPassword)) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    // 打开新的Activity
+                    startActivity(intent);
+                    finish();
+                } else {
+                    showToast("密码输入错误,请重新输入");
+                    lpwv.clearPassword();
+                }
             }
-            HttpUtil.sendHttpRequest(Config.GET_USER_BY_PHONE_NUM + "getUser?phoneNum=" + mPhone.getText().toString(),
-                    HttpMethod.GET, new HttpCallbackListener() {
+        });
 
-                        @Override
-                        public void onFinish(String response) {
-                            try {
-                                JSONObject loginInfoJsonObject = new JSONObject(response);
-                                int loginStatus = loginInfoJsonObject.getInt("status");
-                                switch (loginStatus) {
-                                case -1:
-                                    Toast.makeText(LoginActivity.this, "请输入手机号", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 0:
-                                    Toast.makeText(LoginActivity.this, "手机号不存在,请先注册", Toast.LENGTH_SHORT).show();
-                                case 1:
-                                    JSONObject userInfoJsonObject = loginInfoJsonObject.getJSONObject("info");
-                                    if (mPassword.getText().toString()
-                                            .equals(userInfoJsonObject.getString("numberPwd"))) {
-                                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                        startActivity(intent);
-                                        editor = pref.edit();
-                                        editor.putString("phoneNum", mPhone.getText().toString());
-                                        editor.commit();
-                                        finish();
-                                    } else {
-                                        Toast.makeText(LoginActivity.this, "密码错误,请重新输入", Toast.LENGTH_SHORT).show();
-                                    }
-                                default:
-                                    break;
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+    }
 
-                        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // 如果密码为空,则进入设置密码的界面
+        View noSetPassword = (View) this.findViewById(R.id.tvNoSetPassword);
+        TextView toastTv = (TextView) findViewById(R.id.login_toast);
+        if (lpwv.isPasswordEmpty()) {
+            lpwv.setVisibility(View.GONE);
+            noSetPassword.setVisibility(View.VISIBLE);
+            toastTv.setText("请先绘制手势密码");
+            noSetPassword.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    Intent intent = new Intent(LoginActivity.this,
+                            SetPasswordActivity.class);
+                    // 打开新的Activity
+                    startActivity(intent);
+                    finish();
+                }
 
-                        @Override
-                        public void onError() {
-                            Toast.makeText(LoginActivity.this, "登录失败,请检查网络", Toast.LENGTH_SHORT).show();
-                        }
-                    }, "");
-            break;
-
-        default:
-            break;
+            });
+        } else {
+            toastTv.setText("请输入手势密码");
+            lpwv.setVisibility(View.VISIBLE);
+            noSetPassword.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 
 }

@@ -17,7 +17,7 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
 
 public class ChangeColorIconWithText extends View {
 
@@ -27,8 +27,8 @@ public class ChangeColorIconWithText extends View {
     private int mColor = 0xFF45C01A;
     private Bitmap mIconBitmap;
     private String mText = "笔,记";
-    private int mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources()
-            .getDisplayMetrics());
+    private int mTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+            12, getResources().getDisplayMetrics());
 
     private Canvas mCanvas;
     private Bitmap mBitmap;
@@ -52,7 +52,8 @@ public class ChangeColorIconWithText extends View {
     public ChangeColorIconWithText(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ChangeColorIconWithText);
+        TypedArray a = context.obtainStyledAttributes(attrs,
+                R.styleable.ChangeColorIconWithText);
         int n = a.getIndexCount();
 
         for (int i = 0; i < n; i++) {
@@ -69,8 +70,9 @@ public class ChangeColorIconWithText extends View {
                 mText = a.getString(attr);
                 break;
             case R.styleable.ChangeColorIconWithText_text_size:
-                mTextSize = (int) a.getDimension(attr,
-                        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics()));
+                mTextSize = (int) a.getDimension(attr, TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_SP, 12, getResources()
+                                .getDisplayMetrics()));
             default:
                 break;
             }
@@ -90,8 +92,9 @@ public class ChangeColorIconWithText extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
-        int iconWidth = Math.min(getMeasuredWidth() - getPaddingRight() - getPaddingLeft(), getMeasuredHeight()
-                - getPaddingTop() - getPaddingBottom() - mTextBound.height());
+        int iconWidth = Math.min(getMeasuredWidth() - getPaddingRight()
+                - getPaddingLeft(), getMeasuredHeight() - getPaddingTop()
+                - getPaddingBottom() - mTextBound.height());
 
         int left = getMeasuredWidth() / 2 - iconWidth / 2;
         int top = getMeasuredHeight() / 2 - (mTextBound.height() + iconWidth) / 2;
@@ -133,7 +136,8 @@ public class ChangeColorIconWithText extends View {
      * 在内存中绘制可
      */
     private void setupTargetBitmap(int alpha) {
-        mBitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(), Config.ARGB_8888);
+        mBitmap = Bitmap.createBitmap(getMeasuredWidth(), getMeasuredHeight(),
+                Config.ARGB_8888);
         mCanvas = new Canvas(mBitmap);
         mPaint = new Paint();
         mPaint.setColor(mColor);

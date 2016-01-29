@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,14 +16,16 @@ import android.view.Window;
 
 import com.jiang.shanwe.Config;
 import com.jiang.shanwe.fragment.AddRecordFragment;
+import com.jiang.shanwe.fragment.SettingsFragment;
+import com.jiang.shanwe.fragment.SettingsFragment_;
 import com.jiang.shanwe.fragment.StatisticsFragment;
 import com.jiang.shanwe.fragment.StatisticsFragment_;
-import com.jiang.shanwe.fragment.TabFragment;
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.view.ChangeColorIconWithText;
 import com.jiang.shanwe.view.CustomViewPager;
 
-public class MainActivity extends FragmentActivity implements OnClickListener, OnPageChangeListener {
+public class MainActivity extends FragmentActivity implements OnClickListener,
+        OnPageChangeListener {
 
     private CustomViewPager mViewPager;
     private final List<Fragment> mTabFragments = new ArrayList<Fragment>();
@@ -67,11 +68,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         AddRecordFragment fragment = new AddRecordFragment();
         mTabFragments.add(fragment);
 
-        TabFragment tabFragment3 = new TabFragment();
-        Bundle bundle3 = new Bundle();
-        bundle3.putString(TabFragment.TITLE, "自定义设置区");
-        tabFragment3.setArguments(bundle3);
-        mTabFragments.add(tabFragment3);
+        SettingsFragment settingsFragment = new SettingsFragment_();
+        mTabFragments.add(settingsFragment);
 
         mAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
 
@@ -103,13 +101,6 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
         three.setOnClickListener(this);
 
         two.setIconAlpha(1.0f);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        // getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
     }
 
     @Override
@@ -145,7 +136,8 @@ public class MainActivity extends FragmentActivity implements OnClickListener, O
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    public void onPageScrolled(int position, float positionOffset,
+            int positionOffsetPixels) {
         if (positionOffset > 0) {
             ChangeColorIconWithText left = mTabIndicators.get(position);
             ChangeColorIconWithText right = mTabIndicators.get(position + 1);

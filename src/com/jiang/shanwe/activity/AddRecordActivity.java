@@ -20,7 +20,7 @@ import android.widget.TableRow;
 import com.jiang.shanwe.Config;
 import com.jiang.shanwe.db.DBUtil;
 import com.jiang.shanwe.model.Record;
-import com.jiang.shanwe.uidesign.R;
+import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.util.NumberUtil;
 
 public class AddRecordActivity extends Activity implements OnClickListener {
@@ -55,7 +55,8 @@ public class AddRecordActivity extends Activity implements OnClickListener {
             Record existRecord = DBUtil.getInstance(this).getRecord(recordId);
             etCount.setText(NumberUtil.getSimpleDouble(existRecord.getCount()) + "");
             etComments.setText(existRecord.getComments());
-            etCount.setSelection((NumberUtil.getSimpleDouble(existRecord.getCount()) + "").length());
+            etCount.setSelection((NumberUtil.getSimpleDouble(existRecord.getCount()) + "")
+                    .length());
             etComments.setSelection(existRecord.getComments().length());
 
             List<Integer> tagIds = existRecord.getTagIds();
@@ -66,7 +67,8 @@ public class AddRecordActivity extends Activity implements OnClickListener {
                     for (int j = 0; j < trv.getChildCount(); j++) {
                         if (trv.getChildAt(j) instanceof CheckBox) {
                             CheckBox tagChx = (CheckBox) trv.getChildAt(j);
-                            if (tagIds.contains(Integer.parseInt((String) tagChx.getTag()))) {
+                            if (tagIds
+                                    .contains(Integer.parseInt((String) tagChx.getTag()))) {
                                 tagChx.setChecked(true);
                             }
                         }
