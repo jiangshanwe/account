@@ -15,6 +15,7 @@ import com.jiang.shanwe.Config;
 import com.jiang.shanwe.model.City;
 import com.jiang.shanwe.model.Diary;
 import com.jiang.shanwe.model.Record;
+import com.jiang.shanwe.model.RecordTagAss;
 import com.jiang.shanwe.model.Tag;
 import com.jiang.shanwe.model.User;
 import com.jiang.shanwe.util.DateUtil;
@@ -487,5 +488,79 @@ public class DBUtil {
                         Config.DB_VALUE_STATUS_USABLE + "",
                         Config.DB_VALUE_SYNC_STATUS_NOT + "" });
         return 1;
+    }
+
+    public List<Record> getAllRecords() {
+        List<Record> records = new ArrayList<Record>();
+        String sql = "SELECT * FROM Record";
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Record record = new Record();
+                record.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                record.setOwnerId(cursor.getInt(cursor.getColumnIndex("ownerId")));
+                record.setCount(cursor.getDouble(cursor.getColumnIndex("count")));
+                record.setComments(cursor.getString(cursor.getColumnIndex("comments")) == null ? ""
+                        : cursor.getString(cursor.getColumnIndex("comments")));
+                record.setConsumeDate(new Date(cursor.getLong(cursor
+                        .getColumnIndex("consumeDate"))));
+                record.setCreatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("createdTime"))));
+                record.setUpdatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("updatedTime"))));
+                record.setStatus(cursor.getInt(cursor.getColumnIndex("status")));
+                record.setSyncStatus(cursor.getInt(cursor.getColumnIndex("syncStatus")));
+                records.add(record);
+            } while (cursor.moveToNext());
+        }
+        return records;
+    }
+
+    public List<Tag> getAllTags() {
+        List<Tag> tags = new ArrayList<Tag>();
+        String sql = "SELECT * FROM tag";
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Tag tag = new Tag();
+                tag.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                tag.setName(cursor.getString(cursor.getColumnIndex("name")));
+                tag.setCreaterId(cursor.getInt(cursor.getColumnIndex("createrId")));
+                tag.setCreatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("createdTime"))));
+                tag.setUpdatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("updatedTime"))));
+                tag.setIcon(cursor.getString(cursor.getColumnIndex("icon")) == null ? ""
+                        : cursor.getString(cursor.getColumnIndex("icon")));
+                tag.setStatus(cursor.getInt(cursor.getColumnIndex("status")));
+                tag.setSyncStatus(cursor.getInt(cursor.getColumnIndex("syncStatus")));
+                tags.add(tag);
+            } while (cursor.moveToNext());
+        }
+        return tags;
+    }
+
+    public List<RecordTagAss> getAllRecordTagAsses() {
+        List<RecordTagAss> recordTagAsses = new ArrayList<RecordTagAss>();
+        String sql = "SELECT * FROM Record_Tag";
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()) {
+            do {
+                RecordTagAss recordTagAss = new RecordTagAss();
+                recordTagAss.setId(cursor.getInt(cursor.getColumnIndex("id")));
+                recordTagAss
+                        .setRecordId(cursor.getInt(cursor.getColumnIndex("recordId")));
+                recordTagAss.setTagId(cursor.getInt(cursor.getColumnIndex("tagId")));
+                recordTagAss.setCreatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("createdTime"))));
+                recordTagAss.setUpdatedTime(new Date(cursor.getLong(cursor
+                        .getColumnIndex("createdTime"))));
+                recordTagAss.setStatus(cursor.getInt(cursor.getColumnIndex("status")));
+                recordTagAss.setSyncStatus(cursor.getInt(cursor
+                        .getColumnIndex("syncStatus")));
+                recordTagAsses.add(recordTagAss);
+            } while (cursor.moveToNext());
+        }
+        return recordTagAsses;
     }
 }

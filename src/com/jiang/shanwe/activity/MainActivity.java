@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 
 import com.jiang.shanwe.Config;
-import com.jiang.shanwe.fragment.AddRecordFragment;
+import com.jiang.shanwe.fragment.RecordFragment;
 import com.jiang.shanwe.fragment.SettingsFragment;
 import com.jiang.shanwe.fragment.SettingsFragment_;
 import com.jiang.shanwe.fragment.StatisticsFragment;
@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
         StatisticsFragment statisticsFragment = new StatisticsFragment_();
         mTabFragments.add(statisticsFragment);
 
-        AddRecordFragment fragment = new AddRecordFragment();
+        RecordFragment fragment = new RecordFragment();
         mTabFragments.add(fragment);
 
         SettingsFragment settingsFragment = new SettingsFragment_();

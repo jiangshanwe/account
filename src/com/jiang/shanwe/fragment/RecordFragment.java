@@ -61,7 +61,7 @@ import com.jiang.shanwe.service.WeatherService.WeatherServiceBinder;
 import com.jiang.shanwe.util.DateUtil;
 import com.jiang.shanwe.util.NumberUtil;
 
-public class AddRecordFragment extends Fragment implements OnClickListener,
+public class RecordFragment extends Fragment implements OnClickListener,
         OnItemClickListener, OnItemLongClickListener, OnItemSelectedListener {
 
     private DBUtil dbUtil;
@@ -104,7 +104,7 @@ public class AddRecordFragment extends Fragment implements OnClickListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.add_record, container, false);
+        view = inflater.inflate(R.layout.fragment_record, container, false);
         dbUtil = DBUtil.getInstance(mContext);
         ((MainActivity) mContext).registerFragmentTouchListener(mTouchListener);
 

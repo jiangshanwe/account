@@ -4,7 +4,6 @@ import java.util.Date;
 
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
-import com.jiang.shanwe.loveaccount.R;
 
 public class Config {
 
@@ -17,6 +16,8 @@ public class Config {
 
     public static final String GET_WEATHER_CODE_PREFIX_URL = "http://www.weather.com.cn/data/list3/city";
     public static final String GET_WEATHER_INFO_PREFIX_URL = "http://www.weather.com.cn/data/cityinfo/";
+
+    public static final String BACKUP_DATA_URL = "http://192.168.1.102:8080/account/backupData";
 
     public static final String GET_USER_BY_PHONE_NUM = "http://182.92.163.190:8080/account/";
 
@@ -67,7 +68,8 @@ public class Config {
     public static final String LOG_TAG = "ACCOUT_TAG";
 
     public static String getCachedToken(Context context) {
-        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getString(KEY_TOKEN, null);
+        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getString(
+                KEY_TOKEN, null);
     }
 
     public static void cacheToken(Context context, String token) {
@@ -83,7 +85,8 @@ public class Config {
     }
 
     public static String getCachePhoneNum(Context context) {
-        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getString(KEY_PHONE_NUM, null);
+        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getString(
+                KEY_PHONE_NUM, null);
     }
 
     public static void cacheUserId(Context context, int userId) {
@@ -93,7 +96,8 @@ public class Config {
     }
 
     public static int getCacheUserId(Context context) {
-        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getInt(KEY_USER_ID, -1);
+        return context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getInt(
+                KEY_USER_ID, -1);
     }
 
     public static void cacheLocationDate(Context context, Date date) {
@@ -103,7 +107,8 @@ public class Config {
     }
 
     public static Date getCacheLocationDate(Context context) {
-        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_LOCATION_DATE, new Date().getTime()));
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE)
+                .getLong(KEY_LOCATION_DATE, new Date().getTime()));
     }
 
     public static void cacheStatisticsWeekLocationDate(Context context, Date date) {
@@ -113,7 +118,8 @@ public class Config {
     }
 
     public static Date getStatisticsWeekCacheLocationDate(Context context) {
-        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_STATISTICS_WEEK_DATE, new Date().getTime()));
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE)
+                .getLong(KEY_STATISTICS_WEEK_DATE, new Date().getTime()));
     }
 
     public static void cacheStatisticsMonthLocationDate(Context context, Date date) {
@@ -123,6 +129,7 @@ public class Config {
     }
 
     public static Date getStatisticsMonthCacheLocationDate(Context context) {
-        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE).getLong(KEY_STATISTICS_MONTH_DATE, new Date().getTime()));
+        return new Date(context.getSharedPreferences(APP_ID, Context.MODE_PRIVATE)
+                .getLong(KEY_STATISTICS_MONTH_DATE, new Date().getTime()));
     }
 }

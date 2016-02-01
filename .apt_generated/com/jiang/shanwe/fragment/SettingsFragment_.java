@@ -69,7 +69,20 @@ public final class SettingsFragment_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
+        tvBackupData = ((TextView) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.tvBackupData));
         tvReset = ((TextView) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.tvReset));
+        if (tvBackupData!= null) {
+            tvBackupData.setOnClickListener(new OnClickListener() {
+
+
+                @Override
+                public void onClick(View view) {
+                    SettingsFragment_.this.backupData();
+                }
+
+            }
+            );
+        }
         if (tvReset!= null) {
             tvReset.setOnClickListener(new OnClickListener() {
 

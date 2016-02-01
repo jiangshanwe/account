@@ -1,76 +1,39 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".LoginActivity" >
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/welcome_bg"
+    android:paddingLeft="10dip"
+    android:paddingRight="10dip" >
 
-    <!-- Login progress -->
+    <TextView
+        android:id="@+id/login_toast"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dip"
+        android:gravity="center"
+        android:text="请输入手势密码"
+        android:textColor="@android:color/white" />
 
-    <LinearLayout
-        android:id="@+id/login_status"
+    <com.jiang.shanwe.view.LocusPassWordView
+        android:id="@+id/mLocusPassWordView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+    </com.jiang.shanwe.view.LocusPassWordView>
+
+    <Button
+        android:id="@+id/tvNoSetPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:textColor="@android:color/white"
+        android:text="开始绘制"
         android:visibility="gone" >
+    </Button>
 
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:id="@+id/login_status_message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:fontFamily="sans-serif-light"
-            android:text="@string/login_progress_signing_in"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-    </LinearLayout>
-
-    <!-- Login form -->
-
-    <ScrollView
-        android:id="@+id/login_form"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-
-        <LinearLayout
-            style="@style/LoginFormContainer"
-            android:orientation="vertical" >
-
-            <EditText
-                android:id="@+id/phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="手机号"
-                android:inputType="phone"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-            <EditText
-                android:id="@+id/password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="密码"
-                android:imeActionId="@+id/login"
-                android:imeActionLabel="@string/action_sign_in_short"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textPassword"
-                android:maxLines="1"
-                android:singleLine="true" />
-
-            <Button
-                android:id="@+id/sign_in_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginTop="16dp"
-                android:paddingLeft="32dp"
-                android:paddingRight="32dp"
-                android:text="登录" />
-        </LinearLayout>
-    </ScrollView>
-
-</merge>
+</FrameLayout>

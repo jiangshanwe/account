@@ -26,6 +26,8 @@
     <string name="pm">PM2.5</string>
     <string name="default_text">_ _</string>
     <string name="city_title">城市选择</string>
-    <string name="reset_password">重置密码</string>
+    <string name="reset_password">重置登录密码</string>
+    <string name="backup_data">备份数据到云端</string>
+    <string name="sync_data">同步数据到本地</string>
 
 </resources>

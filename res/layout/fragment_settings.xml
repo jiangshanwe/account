@@ -16,4 +16,28 @@
         android:textColor="@android:color/white" >
     </TextView>
 
+    <TextView
+        android:id="@+id/tvBackupData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="12dp"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="@string/backup_data"
+        android:textColor="@android:color/white" >
+    </TextView>
+
+    <TextView
+        android:id="@+id/tvSyncData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="12dp"
+        android:background="@drawable/button_selector"
+        android:gravity="center"
+        android:text="@string/sync_data"
+        android:textColor="@android:color/white" >
+    </TextView>
+
 </LinearLayout>
