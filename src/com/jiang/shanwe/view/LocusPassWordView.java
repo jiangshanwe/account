@@ -19,8 +19,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
-import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.model.Point;
+import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.util.BitmapUtil;
 import com.jiang.shanwe.util.MathUtil;
 import com.jiang.shanwe.util.RoundUtil;
@@ -56,7 +56,7 @@ public class LocusPassWordView extends View {
     private Bitmap locus_arrow;//线的移动方向
     private Bitmap locus_line_error;//错误状态下的线的图片
     private long CLEAR_TIME = 0;//清除痕迹的时间
-    private int passwordMinLength = 5;//密码最小长度
+    private int passwordMinLength = 4;//密码最小长度
     private boolean isTouch = true; // 是否可操作
     private Matrix mMatrix = new Matrix();
     private int lineAlpha = 50;//连线的透明度

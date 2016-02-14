@@ -1,7 +1,11 @@
 package com.jiang.shanwe.fragment;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.androidannotations.annotations.Click;
@@ -11,6 +15,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -45,27 +50,34 @@ import com.jiang.shanwe.model.Tag;
 public class SettingsFragment extends Fragment {
     private View view;
     private static Context mContext;
-
-    private static Handler uploadHandler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            if (msg.what == 1) {
-                Toast.makeText(mContext, "成功备份到云端", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(mContext, "备份失败，请检查网络稍后重试", Toast.LENGTH_SHORT).show();
-            }
-        };
-    };
+    private DBUtil dbUtil;
 
     @ViewById
     TextView tvReset;
-
     @ViewById
     TextView tvBackupData;
+    @ViewById
+    TextView tvSyncData;
+
+    private static Handler syncHandler = new Handler() {
+        public void handleMessage(android.os.Message msg) {
+            if (msg.what == 1) {
+                Toast.makeText(mContext, "成功备份到云端", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == 2) {
+                Toast.makeText(mContext, "成功恢复到本地", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == -1) {
+                Toast.makeText(mContext, "备份失败，请检查网络稍后重试", Toast.LENGTH_SHORT).show();
+            } else if (msg.what == -2) {
+                Toast.makeText(mContext, "同步失败，请检查网络稍后重试", Toast.LENGTH_SHORT).show();
+            }
+        };
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
+        dbUtil = DBUtil.getInstance(mContext);
     }
 
     @Override
@@ -98,7 +110,6 @@ public class SettingsFragment extends Fragment {
                 httpPost.addHeader("Content-Type", "application/json");
                 httpPost.addHeader("charset", HTTP.UTF_8);
 
-                DBUtil dbUtil = DBUtil.getInstance(getActivity());
                 List<Record> records = dbUtil.getAllRecords();
                 List<Tag> tags = dbUtil.getAllTags();
                 List<RecordTagAss> recordTagAsses = dbUtil.getAllRecordTagAsses();
@@ -121,19 +132,102 @@ public class SettingsFragment extends Fragment {
                         JSONObject resultJsonObject = new JSONObject(EntityUtils
                                 .toString(httpResponse.getEntity()));
                         int status = resultJsonObject.getInt("status");
-                        uploadHandler.sendEmptyMessage(status);
+                        syncHandler.sendEmptyMessage(status);
+                    } else {
+                        syncHandler.sendEmptyMessage(-1);
                     }
                 } catch (UnsupportedEncodingException e) {
-                    uploadHandler.sendEmptyMessage(-1);
+                    syncHandler.sendEmptyMessage(-1);
                     e.printStackTrace();
                 } catch (ClientProtocolException e) {
-                    uploadHandler.sendEmptyMessage(-1);
+                    syncHandler.sendEmptyMessage(-1);
                     e.printStackTrace();
                 } catch (IOException e) {
-                    uploadHandler.sendEmptyMessage(-1);
+                    syncHandler.sendEmptyMessage(-1);
                     e.printStackTrace();
                 } catch (JSONException e) {
-                    uploadHandler.sendEmptyMessage(-1);
+                    syncHandler.sendEmptyMessage(-1);
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    @Click(R.id.tvSyncData)
+    public void syncDataLocal() {
+        new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                BufferedReader in = null;
+                String content = null;
+
+                try {
+                    HttpClient client = new DefaultHttpClient();
+                    HttpGet request = new HttpGet();
+                    request.setURI(new URI(Config.SYNC_DATA_URL));
+                    HttpResponse response = client.execute(request);
+                    if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                        in = new BufferedReader(new InputStreamReader(response
+                                .getEntity().getContent()));
+                        StringBuffer sb = new StringBuffer("");
+                        String line = "";
+                        String NL = System.getProperty("line.separator");
+                        while ((line = in.readLine()) != null) {
+                            sb.append(line + NL);
+                        }
+                        in.close();
+                        content = sb.toString();
+                        dbUtil.clearBeforeSync();
+
+                        Gson gson = new GsonBuilder().setDateFormat(
+                                "yyyy-MM-dd HH:mm:ss.SSS").create();
+                        org.json.JSONObject dataJsonObject = new org.json.JSONObject(
+                                content);
+
+                        JSONArray recordsJsonObject = dataJsonObject
+                                .getJSONArray("records");
+                        JSONArray tagsJsonObject = dataJsonObject.getJSONArray("tags");
+                        JSONArray recordTagAssesJsonObject = dataJsonObject
+                                .getJSONArray("recordTagAsses");
+
+                        Record record;
+                        for (int i = 0; i < recordsJsonObject.length(); i++) {
+                            record = gson.fromJson(recordsJsonObject.getJSONObject(i)
+                                    .toString(), Record.class);
+                            dbUtil.addRecord(record);
+                        }
+
+                        Tag tag;
+                        for (int i = 0; i < tagsJsonObject.length(); i++) {
+                            tag = gson.fromJson(tagsJsonObject.getJSONObject(i)
+                                    .toString(), Tag.class);
+                            dbUtil.addTag(tag);
+                        }
+
+                        RecordTagAss recordTagAss;
+                        for (int i = 0; i < recordTagAssesJsonObject.length(); i++) {
+                            recordTagAss = gson.fromJson(recordTagAssesJsonObject
+                                    .getJSONObject(i).toString(), RecordTagAss.class);
+                            dbUtil.addRecordTagAss(recordTagAss);
+                        }
+
+                        syncHandler.sendEmptyMessage(2);
+
+                    } else {
+                        syncHandler.sendEmptyMessage(-2);
+                    }
+                } catch (URISyntaxException e) {
+                    syncHandler.sendEmptyMessage(-2);
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    syncHandler.sendEmptyMessage(-2);
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    syncHandler.sendEmptyMessage(-2);
+                    e.printStackTrace();
+                } catch (JSONException e) {
+                    syncHandler.sendEmptyMessage(-2);
                     e.printStackTrace();
                 }
             }

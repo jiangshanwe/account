@@ -18,6 +18,7 @@ public class Config {
     public static final String GET_WEATHER_INFO_PREFIX_URL = "http://www.weather.com.cn/data/cityinfo/";
 
     public static final String BACKUP_DATA_URL = "http://192.168.1.102:8080/account/backupData";
+    public static final String SYNC_DATA_URL = "http://192.168.1.102:8080/account/syncData?userId=-1";
 
     public static final String GET_USER_BY_PHONE_NUM = "http://182.92.163.190:8080/account/";
 

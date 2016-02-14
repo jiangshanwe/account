@@ -70,6 +70,32 @@ public class OpenHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_DIARY);
         db.execSQL(CREATE_RECORD_TAG);
         initTags(db);
+        initCities(db);
+    }
+
+    private void initCities(SQLiteDatabase db) {
+        db.execSQL(CREATE_WEATHER_CITY);
+        db.execSQL(INIT_WEATHER_CITY, new String[] {
+                Config.DB_VALUE_SYSTEM_CREATERID + "", "杭州", new Date().getTime() + "",
+                null, 1 + "", new Date().getTime() + "",
+                Config.DB_VALUE_STATUS_USABLE + "",
+                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
+        db.execSQL(INIT_WEATHER_CITY, new String[] {
+                Config.DB_VALUE_SYSTEM_CREATERID + "", "武汉", new Date().getTime() + "",
+                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
+                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
+        db.execSQL(INIT_WEATHER_CITY, new String[] {
+                Config.DB_VALUE_SYSTEM_CREATERID + "", "南通", new Date().getTime() + "",
+                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
+                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
+        db.execSQL(INIT_WEATHER_CITY, new String[] {
+                Config.DB_VALUE_SYSTEM_CREATERID + "", "重庆", new Date().getTime() + "",
+                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
+                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
+        db.execSQL(INIT_WEATHER_CITY, new String[] {
+                Config.DB_VALUE_SYSTEM_CREATERID + "", "安庆", new Date().getTime() + "",
+                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
+                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
     }
 
     private void initTags(SQLiteDatabase db) {
@@ -134,35 +160,15 @@ public class OpenHelper extends SQLiteOpenHelper {
                 Config.DB_VALUE_STATUS_USABLE + "",
                 Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
         db.execSQL(INIT_USER);
-        db.execSQL(CREATE_WEATHER_CITY);
-        db.execSQL(INIT_WEATHER_CITY, new String[] {
-                Config.DB_VALUE_SYSTEM_CREATERID + "", "杭州", new Date().getTime() + "",
-                null, 1 + "", new Date().getTime() + "",
-                Config.DB_VALUE_STATUS_USABLE + "",
-                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
-        db.execSQL(INIT_WEATHER_CITY, new String[] {
-                Config.DB_VALUE_SYSTEM_CREATERID + "", "武汉", new Date().getTime() + "",
-                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
-                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
-        db.execSQL(INIT_WEATHER_CITY, new String[] {
-                Config.DB_VALUE_SYSTEM_CREATERID + "", "南通", new Date().getTime() + "",
-                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
-                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
-        db.execSQL(INIT_WEATHER_CITY, new String[] {
-                Config.DB_VALUE_SYSTEM_CREATERID + "", "重庆", new Date().getTime() + "",
-                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
-                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
-        db.execSQL(INIT_WEATHER_CITY, new String[] {
-                Config.DB_VALUE_SYSTEM_CREATERID + "", "安庆", new Date().getTime() + "",
-                null, 0 + "", null, Config.DB_VALUE_STATUS_USABLE + "",
-                Config.DB_VALUE_SYNC_STATUS_ALREADY + "" });
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         switch (newVersion) {
         case 2:
+
         case 3:
+
         default:
             break;
         }

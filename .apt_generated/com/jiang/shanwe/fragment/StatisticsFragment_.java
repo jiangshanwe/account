@@ -72,12 +72,39 @@ public final class StatisticsFragment_
 
     @Override
     public void onViewChanged(HasViews hasViews) {
-        rbWeek = ((RadioButton) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.rbWeek));
-        rbMonth = ((RadioButton) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.rbMonth));
-        lytPieChart = ((LinearLayout) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.lytPieChart));
-        ivSyncStafisticsChart = ((ImageView) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.ivSyncStafisticsChart));
         lytBarChart = ((LinearLayout) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.lytBarChart));
+        rbWeek = ((RadioButton) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.rbWeek));
+        ivSyncStafisticsChart = ((ImageView) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.ivSyncStafisticsChart));
+        rbMonth = ((RadioButton) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.rbMonth));
         rgStatistics = ((RadioGroup) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.rgStatistics));
+        lytPieChart = ((LinearLayout) hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.lytPieChart));
+        if (rbWeek!= null) {
+            rbWeek.setOnClickListener(new OnClickListener() {
+
+
+                @Override
+                public void onClick(View view) {
+                    StatisticsFragment_.this.renderWeekChart();
+                }
+
+            }
+            );
+        }
+        {
+            View view = hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.btnStatisticsNext);
+            if (view!= null) {
+                view.setOnClickListener(new OnClickListener() {
+
+
+                    @Override
+                    public void onClick(View view) {
+                        StatisticsFragment_.this.nextRangeChart();
+                    }
+
+                }
+                );
+            }
+        }
         if (rbMonth!= null) {
             rbMonth.setOnClickListener(new OnClickListener() {
 
@@ -102,18 +129,6 @@ public final class StatisticsFragment_
             }
             );
         }
-        if (rbWeek!= null) {
-            rbWeek.setOnClickListener(new OnClickListener() {
-
-
-                @Override
-                public void onClick(View view) {
-                    StatisticsFragment_.this.renderWeekChart();
-                }
-
-            }
-            );
-        }
         {
             View view = hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.btnStatisticsPrevious);
             if (view!= null) {
@@ -129,23 +144,8 @@ public final class StatisticsFragment_
                 );
             }
         }
-        {
-            View view = hasViews.findViewById(com.jiang.shanwe.loveaccount.R.id.btnStatisticsNext);
-            if (view!= null) {
-                view.setOnClickListener(new OnClickListener() {
-
-
-                    @Override
-                    public void onClick(View view) {
-                        StatisticsFragment_.this.nextRangeChart();
-                    }
-
-                }
-                );
-            }
-        }
-        renderWeekBarChart();
         renderWeekPieChart();
+        renderWeekBarChart();
     }
 
     public static class FragmentBuilder_

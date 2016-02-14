@@ -94,6 +94,20 @@ public class DBUtil {
         return diary;
     }
 
+    public void addRecord(Record record) {
+        ContentValues values = new ContentValues();
+        values.put("id", record.getId());
+        values.put("ownerId", record.getOwnerId());
+        values.put("count", record.getCount());
+        values.put("comments", record.getComments());
+        values.put("consumeDate", record.getConsumeDate().getTime());
+        values.put("createdTime", record.getCreatedTime().getTime());
+        values.put("updatedTime", record.getUpdatedTime().getTime());
+        values.put("status", Config.DB_VALUE_STATUS_USABLE);
+        values.put("syncStatus", Config.DB_VALUE_SYNC_STATUS_ALREADY);
+        db.insert(TABLE_NAME_RECORD, null, values);
+    }
+
     public void saveOrUpdateRecord(Record record) {
         long recordId = record.getId();
         if (record != null) {
@@ -179,16 +193,32 @@ public class DBUtil {
         cursor.close();
     }
 
-    public void saveTag(Tag tag) {
+    public void addTag(Tag tag) {
         if (tag != null) {
             ContentValues values = new ContentValues();
+            values.put("id", tag.getId());
             values.put("name", tag.getName());
             values.put("createrId", tag.getCreaterId());
-            values.put("createdTime", new Date().getTime());
-            values.put("updatedTime", "");
+            values.put("createdTime", tag.getCreatedTime().getTime());
+            values.put("updatedTime", tag.getUpdatedTime().getTime());
             values.put("icon", tag.getIcon());
-            values.put("status", tag.getStatus());
-            values.put("syncStatus", 0);
+            values.put("status", Config.DB_VALUE_STATUS_USABLE);
+            values.put("syncStatus", Config.DB_VALUE_SYNC_STATUS_NOT);
+            db.insert(TABLE_NAME_TAG, null, values);
+        }
+    }
+
+    public void addRecordTagAss(RecordTagAss recordTagAss) {
+        if (recordTagAss != null) {
+            ContentValues values = new ContentValues();
+            values.put("id", recordTagAss.getId());
+            values.put("recordId", recordTagAss.getRecordId());
+            values.put("tagId", recordTagAss.getTagId());
+            values.put("createdTime", recordTagAss.getCreatedTime().getTime());
+            values.put("updatedTime", recordTagAss.getUpdatedTime().getTime());
+            values.put("status", Config.DB_VALUE_STATUS_USABLE);
+            values.put("syncStatus", Config.DB_VALUE_SYNC_STATUS_NOT);
+            db.insert(TABLE_NAME_RECORD_TAG, null, values);
         }
     }
 
@@ -554,7 +584,7 @@ public class DBUtil {
                 recordTagAss.setCreatedTime(new Date(cursor.getLong(cursor
                         .getColumnIndex("createdTime"))));
                 recordTagAss.setUpdatedTime(new Date(cursor.getLong(cursor
-                        .getColumnIndex("createdTime"))));
+                        .getColumnIndex("updatedTime"))));
                 recordTagAss.setStatus(cursor.getInt(cursor.getColumnIndex("status")));
                 recordTagAss.setSyncStatus(cursor.getInt(cursor
                         .getColumnIndex("syncStatus")));
@@ -562,5 +592,17 @@ public class DBUtil {
             } while (cursor.moveToNext());
         }
         return recordTagAsses;
+    }
+
+    /**
+     * 仅供测试！同步到本地之前先删除本地数据
+     */
+    public void clearBeforeSync() {
+        String clearRecordTagAssSql = "DELETE FROM Record_Tag";
+        String clearRecordSql = "DELETE FROM Record";
+        String clearTagSql = "DELETE FROM Tag";
+        db.execSQL(clearRecordTagAssSql);
+        db.execSQL(clearRecordSql);
+        db.execSQL(clearTagSql);
     }
 }

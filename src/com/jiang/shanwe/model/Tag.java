@@ -16,6 +16,8 @@ public class Tag {
     private Date createdTime;
     private Date updatedTime;
     private String icon;
+    private int status;
+    private int syncStatus;
 
     public String getIcon() {
         return icon;
@@ -24,9 +26,6 @@ public class Tag {
     public void setIcon(String icon) {
         this.icon = icon;
     }
-
-    private int status;
-    private int syncStatus;
 
     public Tag() {
         super();

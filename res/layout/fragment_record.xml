@@ -147,7 +147,7 @@
             android:layout_height="90dp"
             android:layout_above="@+id/btn_add_record"
             android:layout_centerHorizontal="true"
-            android:hint="今天过的怎么样?" />
+            android:hint="    . . ." />
     </RelativeLayout>
 
 </LinearLayout>

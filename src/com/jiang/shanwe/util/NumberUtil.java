@@ -1,5 +1,6 @@
 package com.jiang.shanwe.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Random;
 
@@ -14,7 +15,8 @@ public class NumberUtil {
      */
     public static String getSimpleDouble(Double num) {
         String countStr = num + "";
-        return countStr.endsWith(".0") ? countStr.substring(0, (countStr).indexOf(".")) : countStr;
+        return countStr.endsWith(".0") ? countStr.substring(0, (countStr).indexOf("."))
+                : countStr;
     }
 
     /**
@@ -28,7 +30,7 @@ public class NumberUtil {
         for (int i = 0; i < data[dimension - 1].length; i++) {
             result += data[dimension - 1][i];
         }
-        return result;
+        return new BigDecimal(result).setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
     }
 
     /**

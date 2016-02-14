@@ -17,11 +17,11 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.bean.FutureWeatherBean;
 import com.jiang.shanwe.bean.HoursWeatherBean;
 import com.jiang.shanwe.bean.PMBean;
 import com.jiang.shanwe.bean.WeatherBean;
+import com.jiang.shanwe.loveaccount.R;
 import com.jiang.shanwe.service.WeatherService;
 import com.jiang.shanwe.service.WeatherService.OnParserCallBack;
 import com.jiang.shanwe.service.WeatherService.WeatherServiceBinder;
@@ -147,7 +147,7 @@ public class WeatherActivity extends Activity {
 
         tv_now_temp.setText(bean.getNow_temp());
         iv_today_weather.setImageResource(getResources().getIdentifier(
-                "d" + bean.getWeather_id(), "drawable", "com.jiang.shanwe"));
+                "d" + bean.getWeather_id(), "drawable", "com.jiang.shanwe.loveaccount"));
 
         List<FutureWeatherBean> futureList = bean.getFutureList();
         if (futureList.size() == 3) {
@@ -167,7 +167,8 @@ public class WeatherActivity extends Activity {
             prefixStr = "n";
         }
         iv_now_weather.setImageResource(getResources().getIdentifier(
-                prefixStr + bean.getWeather_id(), "drawable", "com.jiang.shanwe"));
+                prefixStr + bean.getWeather_id(), "drawable",
+                "com.jiang.shanwe.loveaccount"));
         tv_humidity.setText(bean.getHumidity());
         tv_dressing_index.setText(bean.getDressing_index());
         tv_uv_index.setText(bean.getUv_index());
@@ -178,7 +179,7 @@ public class WeatherActivity extends Activity {
             TextView tv_temp_a, TextView tv_temp_b, FutureWeatherBean bean) {
         tv_week.setText(bean.getWeek());
         iv_weather.setImageResource(getResources().getIdentifier(
-                "d" + bean.getWeather_id(), "drawable", "com.jiang.shanwe"));
+                "d" + bean.getWeather_id(), "drawable", "com.jiang.shanwe.loveaccount"));
         String[] tempArr = bean.getTemp().split("~");
         String temp_str_a = tempArr[1].substring(0, tempArr[1].indexOf("℃"));
         String temp_str_b = tempArr[0].substring(0, tempArr[0].indexOf("℃"));
@@ -197,7 +198,8 @@ public class WeatherActivity extends Activity {
         }
         tv_hour.setText(bean.getTime());
         iv_weather.setImageResource(getResources().getIdentifier(
-                prefixStr + bean.getWeather_id(), "drawable", "com.jiang.shanwe"));
+                prefixStr + bean.getWeather_id(), "drawable",
+                "com.jiang.shanwe.loveaccount"));
         tv_temp.setText(bean.getTemp());
     }
 

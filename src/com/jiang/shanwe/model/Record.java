@@ -125,4 +125,13 @@ public class Record {
         return desc;
     }
 
+    @Override
+    public String toString() {
+        return "Record [id=" + id + ", ownerId=" + ownerId + ", count=" + count
+                + ", comments=" + comments + ", consumeDate=" + consumeDate
+                + ", createdTime=" + createdTime + ", updatedTime=" + updatedTime
+                + ", status=" + status + ", syncStatus=" + syncStatus + ", tags=" + tags
+                + ", tagIds=" + tagIds + "]";
+    }
+
 }
